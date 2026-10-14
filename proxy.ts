@@ -1,10 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { hostFromHeaders, loadConfig, resolveHost } from "@/lib/tenant";
+import { listDbTenants } from "@/lib/tenant-store";
 
 // Routes served identically on every host (not rewritten into a site tree).
 const SHARED_PREFIXES = ["/debug", "/api/"];
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const host = hostFromHeaders(request.headers);
   const { pathname } = request.nextUrl;
 
@@ -23,7 +24,18 @@ export function proxy(request: NextRequest) {
     return res;
   }
 
-  const { site, tenant } = resolveHost(host, cfg.config);
+  let { site, tenant } = resolveHost(host, cfg.config);
+
+  // Not a static tenant: check tenants added from the back office.
+  if (site === "unknown" && host.endsWith(`.${cfg.config.rootDomain}`)) {
+    try {
+      const dbSlugs = (await listDbTenants()).map((t) => t.slug);
+      ({ site, tenant } = resolveHost(host, { ...cfg.config, tenants: [...cfg.config.tenants, ...dbSlugs] }));
+    } catch (err) {
+      // Fail closed: if the table can't be read, DB tenants stay unknown.
+      console.error("tenant store read failed", err);
+    }
+  }
 
   // Never trust client-supplied routing headers.
   const requestHeaders = new Headers(request.headers);

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { getResolution } from "@/lib/request";
+import { listDbTenants } from "@/lib/tenant-store";
 import { clearTestCookie, setTestCookie } from "./actions";
 
 export default async function TenantHome() {
@@ -8,10 +9,12 @@ export default async function TenantHome() {
   if (site !== "tenant") notFound();
 
   const cookie = (await cookies()).get("test_session");
+  const name = (await listDbTenants().catch(() => [])).find((t) => t.slug === tenant)?.name;
 
   return (
     <>
       <h1 className="big">{tenant}</h1>
+      {name && name !== tenant && <p style={{ fontSize: "1.5rem", marginTop: 0 }}>{name}</p>}
       <p>
         Host: <code>{host}</code> · APP_ENV: <code>{process.env.APP_ENV}</code>
       </p>

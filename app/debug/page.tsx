@@ -20,6 +20,8 @@ export default async function DebugPage() {
     ["TENANTS", show(process.env.TENANTS)],
     ["DEV_HOSTS", show(process.env.DEV_HOSTS)],
     ["DEV_TENANT_SLUG", show(process.env.DEV_TENANT_SLUG)],
+    ["TENANTS_TABLE", show(process.env.TENANTS_TABLE)],
+    ["ADMIN_PASSWORD", process.env.ADMIN_PASSWORD ? "(set)" : "(unset)"],
     ["BUILD_ID", show(process.env.BUILD_ID)],
     ["server time", new Date().toISOString()],
     ["process uptime", `${process.uptime().toFixed(1)} s`],

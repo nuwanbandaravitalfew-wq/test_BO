@@ -34,7 +34,7 @@ export const RESERVED_SLUGS = new Set([
 // Single DNS label: lowercase alphanumerics and hyphens, no leading/trailing hyphen.
 const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 
-function isValidTenantSlug(slug: string): boolean {
+export function isValidTenantSlug(slug: string): boolean {
   return SLUG_RE.test(slug) && !RESERVED_SLUGS.has(slug);
 }
 

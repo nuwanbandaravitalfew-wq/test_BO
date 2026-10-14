@@ -22,6 +22,24 @@ On every request, `proxy.ts` deletes any client-sent `x-tenant`, `x-site` or
 `x-resolved-host` header and sets its own. Every response carries
 `x-resolved-site` and `x-resolved-tenant`.
 
+## Adding tenants from the back office
+
+Log in at `admin.<root>` with `ADMIN_PASSWORD`, enter a slug and a display name,
+and the tenant is live at `https://<slug>.<root>` right away. No DNS change or
+rebuild is needed, because the wildcard record and certificate already cover
+every subdomain.
+
+- Added tenants are stored in the DynamoDB table `TENANTS_TABLE` (partition key
+  `slug`). Tenants from the `TENANTS` env var are fixed and can't be deleted
+  from the UI.
+- On Amplify, the app reads the table through the IAM compute role
+  `test-bo-amplify-compute`, which can only Scan/Get/Put/Delete on that table.
+- Each compute instance caches the table for 10 seconds, so a new tenant can
+  take up to 10 seconds to appear on other instances.
+- If the table can't be read, tenants added from the UI resolve as unknown
+  (404). `TENANTS` tenants keep working.
+- The admin session cookie is host-only, so tenant subdomains never receive it.
+
 If `APP_ROOT_DOMAIN`, `APP_ENV` or `TENANTS` is missing, every route returns
 HTTP 500 with a configuration-error page. `/api/*` returns a JSON error instead.
 

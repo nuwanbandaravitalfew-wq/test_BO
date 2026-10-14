@@ -13,7 +13,8 @@ frontend:
         - |
           export BUILD_ID="${BUILD_ID:-$AWS_COMMIT_ID}"
           : > .env.production
-          for name in APP_ROOT_DOMAIN APP_ENV TENANTS DEV_HOSTS DEV_TENANT_SLUG BUILD_ID; do
+          for name in APP_ROOT_DOMAIN APP_ENV TENANTS DEV_HOSTS DEV_TENANT_SLUG BUILD_ID \
+                      TENANTS_TABLE TENANTS_TABLE_REGION ADMIN_PASSWORD; do
             value="${!name}"
             if [ -n "$value" ]; then
               printf '%s=%s\n' "$name" "$value" >> .env.production
