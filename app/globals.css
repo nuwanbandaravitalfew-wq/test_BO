@@ -1,0 +1,35 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 48rem;
+  margin: 3rem auto;
+  padding: 0 1rem;
+  color: #111;
+}
+h1.big {
+  font-size: 4rem;
+  margin: 0 0 1rem;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  padding: 0.4rem 0.6rem;
+  vertical-align: top;
+}
+th {
+  white-space: nowrap;
+  width: 1%;
+}
+footer {
+  margin-top: 3rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+button {
+  padding: 0.4rem 0.8rem;
+  margin-right: 0.5rem;
+}
